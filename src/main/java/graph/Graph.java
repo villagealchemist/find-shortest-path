@@ -51,6 +51,17 @@ public class Graph {
                 Edge newEdge = new Edge(destId, cost, null);
                 addEdge(cityId, newEdge);
             }
+            for (int i = 0; i < adjacencyList.length; i++){
+                Edge cur = adjacencyList[i];
+                if (cur == null){
+                    continue;
+                }else{
+                   while (cur != null){
+                       System.out.println(cur.getCost());
+                       cur = cur.getNext();
+                   }
+                }
+            }
         }catch(IOException e){
                 System.out.println("IO Exception!");
         }
@@ -94,6 +105,9 @@ public class Graph {
                 adjacencyList[nodeId] = cur;
             }else {
                 while (cur.getNext() != null) {
+                    if (cur.getNeighbor() == destId){
+                        break;
+                    }
                     cur = cur.getNext();
                 }
                 cur.setNext(edge);
@@ -103,6 +117,9 @@ public class Graph {
                 adjacencyList[destId] = destCur;
             }else{
                 while (destCur.getNext() != null){
+                    if(destCur.getNeighbor() == nodeId){
+                        break;
+                    }
                     destCur = destCur.getNext();
                 }
                 destCur.setNext(destEdge);
