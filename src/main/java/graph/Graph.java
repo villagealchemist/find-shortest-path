@@ -13,11 +13,11 @@ import java.awt.Point;
 public class Graph {
     public final int EPS_DIST = 5;
 
-    private int numNodes;     // total number of nodes
+    private int numNodes = 0;     // total number of nodes
     private int numEdges; // total number of edges
     private CityNode[] nodes; // array of nodes of the graph
     private Edge[] adjacencyList; // adjacency list; for each vertex stores a linked list of edges
-    private Map<String, Integer> labelsToIndices; // a HashMap that maps each city to the corresponding node id
+    private Map<String, Integer> labelsToIndices = new HashMap<>(); // a HashMap that maps each city to the corresponding node id
 
     /**
      * Read graph info from the given file, and create nodes and edges of
@@ -26,8 +26,34 @@ public class Graph {
      * @param filename name of the file that has nodes and edges
      */
     public void loadGraph(String filename) {
-        // FILL IN CODE
-
+        try {
+            FileReader file = new FileReader(filename);
+            BufferedReader br = new BufferedReader(file);
+            br.readLine();
+            int totalNodes = Integer.parseInt(br.readLine());
+            String line;
+            nodes = new CityNode[totalNodes];
+            while ((line = br.readLine()) != null && !line.equals("ARCS")) { //reads cities and coordinates
+                String[] myLine = line.split(" ");
+                String cityName = myLine[0];
+                Double x = Double.parseDouble(myLine[1]);
+                Double y = Double.parseDouble(myLine[2]);
+                labelsToIndices.put(cityName, numNodes);
+                CityNode newNode = new CityNode(cityName, x, y);
+                addNode(newNode);
+            }
+            adjacencyList = new Edge[numNodes];
+            while ((line = br.readLine()) != null) { //reads edges and adds to adjacency list
+                String[] myLine = line.split(" ");
+                int cityId = labelsToIndices.get(myLine[0]);
+                int destId = labelsToIndices.get(myLine[1]);
+                int cost = Integer.parseInt(myLine[2]);
+                Edge newEdge = new Edge(destId, cost, null);
+                addEdge(cityId, newEdge);
+            }
+        }catch(IOException e){
+                System.out.println("IO Exception!");
+        }
     }
 
     /**
@@ -38,7 +64,8 @@ public class Graph {
      * @param node a CityNode to add to the graph
      */
     public void addNode(CityNode node) {
-        // FILL IN CODE
+        nodes[numNodes] = node;
+        numNodes++;
     }
 
     /**
@@ -57,8 +84,32 @@ public class Graph {
      * @param edge edge to add
      */
     public void addEdge(int nodeId, Edge edge) {
-        // FILL IN CODE
-    }
+            int destId = edge.getNeighbor();//id of destination vertex
+            Edge destEdge = new Edge(nodeId, edge.getCost(), null);
+
+            Edge cur = adjacencyList[nodeId]; //place in array of start city
+            Edge destCur = adjacencyList[destId]; //place in array of destination city
+            if (cur == null){
+                cur = edge;
+                adjacencyList[nodeId] = cur;
+            }else {
+                while (cur.getNext() != null) {
+                    cur = cur.getNext();
+                }
+                cur.setNext(edge);
+            }
+            if(destCur == null){
+                destCur = destEdge;
+                adjacencyList[destId] = destCur;
+            }else{
+                while (destCur.getNext() != null){
+                    destCur = destCur.getNext();
+                }
+                destCur.setNext(destEdge);
+            }
+        }
+
+
 
     /**
      * Returns an integer id of the given city node
@@ -66,8 +117,8 @@ public class Graph {
      * @return its integer id
      */
     public int getId(CityNode city) {
-
-        return -1; // Don't forget to change this
+        int cityIndex = labelsToIndices.get(city);
+        return cityIndex;
     }
 
     /**
