@@ -14,7 +14,7 @@ public class Graph {
     public final int EPS_DIST = 5;
 
     private int numNodes = 0;     // total number of nodes
-    private int numEdges; // total number of edges
+    private int numEdges = 0; // total number of edges
     private CityNode[] nodes; // array of nodes of the graph
     private Edge[] adjacencyList; // adjacency list; for each vertex stores a linked list of edges
     private Map<String, Integer> labelsToIndices = new HashMap<>(); // a HashMap that maps each city to the corresponding node id
@@ -51,7 +51,7 @@ public class Graph {
                 Edge newEdge = new Edge(destId, cost, null);
                 addEdge(cityId, newEdge);
             }
-            for (int i = 0; i < adjacencyList.length; i++){
+            /*for (int i = 0; i < adjacencyList.length; i++){ //using this for testing
                 Edge cur = adjacencyList[i];
                 if (cur == null){
                     continue;
@@ -61,7 +61,9 @@ public class Graph {
                        cur = cur.getNext();
                    }
                 }
-            }
+            }*/
+
+
         }catch(IOException e){
                 System.out.println("IO Exception!");
         }
@@ -124,6 +126,7 @@ public class Graph {
                 }
                 destCur.setNext(destEdge);
             }
+            numEdges += 2;
         }
 
 
@@ -150,8 +153,24 @@ public class Graph {
     public Point[][] getEdges() {
         int i = 0;
         Point[][] edges2D = new Point[numEdges][2];
-        // FILL IN CODE
 
+        for (int j = 0; j < adjacencyList.length; j++){
+
+            if(adjacencyList[j] == null){
+                continue;
+            }else {
+                Edge cur = adjacencyList[j];
+                while (cur != null){
+                    int destVertex = cur.getNeighbor();
+                    Point v1 = nodes[j].getLocation();
+                    Point v2 = nodes[destVertex].getLocation();
+                   edges2D[i][0] = v1;
+                   edges2D[i][1] = v2;
+                   cur = cur.getNext();
+                   i++;
+                }
+            }
+        }
         return edges2D;
     }
 
@@ -186,7 +205,6 @@ public class Graph {
 
 
         return labels;
-
     }
 
     /** Take a list of node ids on the path and return an array where each
