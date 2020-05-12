@@ -38,7 +38,7 @@ public class Graph {
                 String cityName = myLine[0];
                 Double x = Double.parseDouble(myLine[1]);
                 Double y = Double.parseDouble(myLine[2]);
-                labelsToIndices.put(cityName, numNodes);
+               // labelsToIndices.put(cityName, numNodes);
                 CityNode newNode = new CityNode(cityName, x, y);
                 addNode(newNode);
             }
@@ -51,19 +51,6 @@ public class Graph {
                 Edge newEdge = new Edge(destId, cost, null);
                 addEdge(cityId, newEdge);
             }
-            /*for (int i = 0; i < adjacencyList.length; i++){ //using this for testing
-                Edge cur = adjacencyList[i];
-                if (cur == null){
-                    continue;
-                }else{
-                   while (cur != null){
-                       System.out.println(cur.getCost());
-                       cur = cur.getNext();
-                   }
-                }
-            }*/
-
-
         }catch(IOException e){
                 System.out.println("IO Exception!");
         }
@@ -77,6 +64,7 @@ public class Graph {
      * @param node a CityNode to add to the graph
      */
     public void addNode(CityNode node) {
+        labelsToIndices.put(node.getCity(), numNodes);
         nodes[numNodes] = node;
         numNodes++;
     }
@@ -155,7 +143,6 @@ public class Graph {
         Point[][] edges2D = new Point[numEdges][2];
 
         for (int j = 0; j < adjacencyList.length; j++){
-
             if(adjacencyList[j] == null){
                 continue;
             }else {
@@ -185,7 +172,10 @@ public class Graph {
             return null;
         }
         Point[] pnodes = new Point[this.nodes.length];
-        // FILL IN CODE
+        for(int i = 0; i < nodes.length; i++){
+            Point point = nodes[i].getLocation();
+            pnodes[i] = point;
+        }
 
         return pnodes;
     }
@@ -201,7 +191,9 @@ public class Graph {
             return null;
         }
         String[] labels = new String[nodes.length];
-        // FILL IN CODE
+        for (int i = 0; i < nodes.length; i++){
+            labels[i] = nodes[i].getCity();
+        }
 
 
         return labels;
@@ -215,8 +207,20 @@ public class Graph {
     public Point[][] getPath(List<Integer> pathOfNodes) {
         int i = 0;
         Point[][] edges2D = new Point[pathOfNodes.size()-1][2];
-        // Each "edge" is an array of size two (one Point is origin, one Point is destination)
-        // FILL IN CODE
+        if(pathOfNodes == null){
+            return null;
+        }else{
+            while (i < pathOfNodes.size() - 1){
+                CityNode first = nodes[pathOfNodes.get(i)];
+                CityNode second = nodes[pathOfNodes.get(i + 1)];
+                Point p1 = first.getLocation();
+                Point p2 = second.getLocation();
+                edges2D[i][0] = p1;
+                edges2D[i][1] = p2;
+                i++;
+            }
+        }
+
 
         return edges2D;
     }
