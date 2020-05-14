@@ -42,17 +42,14 @@ public class Dijkstra {
         int INFINITY = (int)Double.POSITIVE_INFINITY;
         boolean[] found = new boolean[graph.numNodes()];
         int sourceIndex = graph.getId(origin);
-
-        int[][] dTable = new int[graph.numNodes()][2]; //[i][0] = current path cost [i][1] = source vertex id
-
+        int[][] dTable = new int[graph.numNodes()][2]; //[i][0] == current path cost [i][1] == source vertex id
         int cost = 0;
         int sourceVer = 1; //these are to make it easier to recall which index is which for the dtable
 
         /*create Dijkstra's table*/
         for(int i = 0; i < graph.numNodes(); i++){
             dTable[i][sourceVer] = -1;
-            if (i == sourceIndex) { //initializes origin to have itself as source, and it's found to be true
-                //dTable[i][sourceIndex] = graph.getId(origin);
+            if (i == sourceIndex) { //initializes origin to have itself as source
                 dTable[i][cost] = 0;
             }else{ //initializes all other vertices to have infinity and -1
                 dTable[i][cost] = INFINITY;
@@ -82,12 +79,10 @@ public class Dijkstra {
             k = dTable[k][sourceVer];
         }
         shortestPath.add(0, k); //adds origin
+
+
         return shortestPath;
     }
-
-
-
-
     /**
      * Return the shortest path as a 2D array of Points.
      * Each element in the array is another array that has 2 Points:
@@ -106,5 +101,4 @@ public class Dijkstra {
     public void resetPath() {
         shortestPath = null;
     }
-
 }

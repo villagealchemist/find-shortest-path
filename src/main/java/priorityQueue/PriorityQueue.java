@@ -27,47 +27,22 @@ public class PriorityQueue {
         // Assigned MIN_VALUE so that it's easier to bubble up
     }
 
-    /** Return the index of the left child of the element at index pos
-     *
-     * @param pos the index of the element in the heap array
-     * @return the index of the left child
-     */
     private int leftChild(int pos) {
         return 2 * pos;
     }
 
-    /** Return the index of the right child
-     *
-     * @param pos the index of the element in the heap array
-     * @return the index of the right child
-     */
     private int rightChild(int pos) {
         return 2 * pos + 1;
     }
 
-    /** Return the index of the parent
-     *
-     * @param pos the index of the element in the heap array
-     * @return the index of the parent
-     */
     private int parent(int pos) {
         return pos / 2;
     }
 
-    /** Returns true if the node in a given position is a leaf
-     *
-     * @param pos the index of the element in the heap array
-     * @return true if the node is a leaf, false otherwise
-     */
     private boolean isLeaf(int pos) {
         return ((pos > size / 2) && (pos <= size));
     }
 
-    /** Swap given elements: one at index pos1, another at index pos2
-     *
-     * @param pos1 the index of the first element in the heap
-     * @param pos2 the index of the second element in the heap
-     */
     private void swap(int pos1, int pos2) {
         int tmp;
         tmp = heap[pos1];
@@ -78,7 +53,6 @@ public class PriorityQueue {
         positions[firstId] = pos2;
         positions[secId] = pos1;
     }
-//************************************************************//
     /** Insert a new element (nodeId, priority) into the heap.
      *  For this project, the priority is the current "distance"
      *  for this nodeId in Dikstra's algorithm. */
@@ -95,16 +69,10 @@ public class PriorityQueue {
 
     }
 
-    /**
-     * Remove the element with the minimum priority
-     * from the min heap and return its nodeId.
-     * @return nodeId of the element with the smallest priority
-     */
     public int removeMin() {
         swap(1, size); // swap the end of the heap into the root
         size--;  	   // removed the end of the heap
         int nodeId = -1;
-        // fix the heap property - push down as needed
         if (size != 0) {
             pushDown(1);
         }
@@ -112,12 +80,6 @@ public class PriorityQueue {
         return nodeId;
     }
 
-    /**
-     * Reduce the priority of the element with the given nodeId to newPriority.
-     * You may assume newPriority is less or equal to the current priority for this node.
-     * @param nodeId id of the node
-     * @param newPriority new value of priority
-     */
     public void reduceKey(int nodeId, int newPriority) {
         int heapPos = positions[nodeId];
         heap[heapPos] = newPriority;
@@ -157,9 +119,8 @@ public class PriorityQueue {
             swap(position, smallestChild);
             position = smallestChild;
         }
-
     }
-
+    /*method to get nodeId from the positions array*/
     private int getNodeId(int heapPos){
         int nodeId = -1;
         for(int i = 0; i < positions.length; i++){
@@ -170,8 +131,5 @@ public class PriorityQueue {
         }
         return nodeId;
     }
-
-
-
 }
 

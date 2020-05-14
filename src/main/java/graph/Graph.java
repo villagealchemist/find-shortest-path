@@ -120,10 +120,9 @@ public class Graph {
             numEdges += 2;
         }
 
-
-
     /**
      * Returns an integer id of the given city node
+     *
      * @param city node of the graph
      * @return its integer id
      */
@@ -171,7 +170,7 @@ public class Graph {
      */
     public Point[] getNodes() {
         if (this.nodes == null) {
-            // System.out.println("Graph has no nodes. Write loadGraph method first. ");
+            System.out.println("Graph has no nodes. Write loadGraph method first. ");
             return null;
         }
         Point[] pnodes = new Point[this.nodes.length];
@@ -223,8 +222,6 @@ public class Graph {
                 i++;
             }
         }
-
-
         return edges2D;
     }
 
