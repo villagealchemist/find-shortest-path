@@ -1,5 +1,7 @@
 package priorityQueue;
 
+import graph.Graph;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,18 +13,16 @@ public class PriorityQueue {
     private int[] heap; // the array to store the heap
     private int maxsize; // the size of the array
     private int size; // the current number of elements in the array
-    private int[] positions;
-    Map<Integer,Integer> priorities = new HashMap<Integer, Integer>();
+    private int[] positions;// creates new positions array with size of numNodes
 
-    /**
-     * Constructor
-     * @param max the maximum size of the heap
-     */
-    public void MinHeap(int max) {
-        maxsize = max;
+
+
+    public PriorityQueue(int max) {
+        maxsize = max + 1;
         heap = new int[maxsize];
         size = 0;
         heap[0] = Integer.MIN_VALUE;
+        positions = new int[max];
         // Note: no actual data is stored at heap[0].
         // Assigned MIN_VALUE so that it's easier to bubble up
     }
@@ -73,14 +73,25 @@ public class PriorityQueue {
         tmp = heap[pos1];
         heap[pos1] = heap[pos2];
         heap[pos2] = tmp;
+        int firstId = getNodeId(pos1);
+        int secId = getNodeId(pos2);
+        positions[firstId] = pos2;
+        positions[secId] = pos1;
     }
 //************************************************************//
     /** Insert a new element (nodeId, priority) into the heap.
      *  For this project, the priority is the current "distance"
      *  for this nodeId in Dikstra's algorithm. */
     public void insert(int nodeId, int priority) {
-        priorities.put(nodeId, priority);
-
+        size++;
+        heap[size] = priority;
+        positions[nodeId] = size;
+        int current = size;
+        while (heap[current] < heap[parent(current)]){
+            swap(current, parent(current));
+            current = parent(current);
+            positions[nodeId] = current;
+        }
 
     }
 
@@ -92,12 +103,13 @@ public class PriorityQueue {
     public int removeMin() {
         swap(1, size); // swap the end of the heap into the root
         size--;  	   // removed the end of the heap
+        int nodeId = -1;
         // fix the heap property - push down as needed
         if (size != 0) {
             pushDown(1);
         }
-
-        return heap[size + 1];
+        nodeId = getNodeId(size + 1);
+        return nodeId;
     }
 
     /**
@@ -107,27 +119,58 @@ public class PriorityQueue {
      * @param newPriority new value of priority
      */
     public void reduceKey(int nodeId, int newPriority) {
+        int heapPos = positions[nodeId];
+        heap[heapPos] = newPriority;
+        bubbleUp(nodeId);
+    }
 
+    public boolean isEmpty(){
+        if (size == 0){
+            return true;
+        }
+        return false;
+    }
+
+    private void bubbleUp(int nodeId){
+        int position = positions[nodeId];
+        int parent = parent(position);
+        int parentNodeId = -1;
+        while(heap[parent] > heap[position]){
+            swap(parent, position);
+            }
+            position = parent(position);
     }
 
     private void pushDown(int position) {
-        int smallestchild;
+        int smallestChild;
         while (!isLeaf(position)) {
-            smallestchild = leftChild(position); // set the smallest child to left child
-            if ((smallestchild < size) && (heap[smallestchild] > heap[smallestchild + 1]))
-                smallestchild = smallestchild + 1; // right child was smaller, so smallest child = right child
-
+            smallestChild = leftChild(position); // set the smallest child to left child
+            if ((smallestChild < size) && (heap[smallestChild] > heap[smallestChild + 1])) {
+                smallestChild = smallestChild + 1; // right child was smaller, so smallest child = right child
+            }
             // the value of the smallest child is less than value of current,
             // the heap is already valid
-            if (heap[position] <= heap[smallestchild])
+            if (heap[position] <= heap[smallestChild]) {
                 return;
-            swap(position, smallestchild);
-            position = smallestchild;
+            }
+            swap(position, smallestChild);
+            position = smallestChild;
         }
-        for (int i = 1; i < heap.length; i ++){
 
-        }
     }
+
+    private int getNodeId(int heapPos){
+        int nodeId = -1;
+        for(int i = 0; i < positions.length; i++){
+            if (positions[i] == heapPos){
+                nodeId = i;
+                break;
+            }
+        }
+        return nodeId;
+    }
+
+
 
 }
 

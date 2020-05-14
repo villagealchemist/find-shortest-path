@@ -76,6 +76,9 @@ public class Graph {
     public int numNodes() {
         return numNodes;
     }
+    public int numEdges(){
+        return numEdges;
+    }
 
     /**
      * Adds the edge to the linked list for the given nodeId
@@ -125,7 +128,7 @@ public class Graph {
      * @return its integer id
      */
     public int getId(CityNode city) {
-        int cityIndex = labelsToIndices.get(city);
+        int cityIndex = labelsToIndices.get(city.getCity());
         return cityIndex;
     }
 
@@ -252,4 +255,9 @@ public class Graph {
         }
         return null;
     }
+
+    public Edge getAdjList(int nodeId){
+        return adjacencyList[nodeId];
+    }
+
 }

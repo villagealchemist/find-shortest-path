@@ -5,12 +5,16 @@ package graph;
  *  Fill in code. You may add additional helper methods or classes.
  */
 
+import priorityQueue.PriorityQueue;
+
 import java.util.*;
 import java.awt.Point;
 
 public class Dijkstra {
     private Graph graph; // stores the graph of CityNode-s and edges connecting them
     private List<Integer> shortestPath = null; // nodes that are part of the shortest path
+    priorityQueue.PriorityQueue queue;
+
 
     /** Constructor
      *
@@ -22,6 +26,7 @@ public class Dijkstra {
         graph.loadGraph(filename);
     }
 
+
     /**
      * Returns the shortest path between the origin vertex and the destination vertex.
      * The result is stored in shortestPathEdges.
@@ -31,20 +36,62 @@ public class Dijkstra {
      * @return the ArrayList of nodeIds (of nodes on the shortest path)
      */
     public List<Integer> computeShortestPath(CityNode origin, CityNode destination) {
-
+        List<Integer> shortestPath = new LinkedList<Integer>();
         // FILL IN CODE
+        queue = new PriorityQueue(graph.numNodes());
+        int INFINITY = (int)Double.POSITIVE_INFINITY;
+        boolean[] found = new boolean[graph.numNodes()];
+        int sourceIndex = graph.getId(origin);
 
-        // Create and initialize Dijkstra's table
-        // Create and initialize a Priority Queue
+        int[][] dTable = new int[graph.numNodes()][2]; //[i][0] = current path cost [i][1] = source vertex id
 
-        // Run Dijkstra
+        int cost = 0;
+        int sourceVer = 1; //these are to make it easier to recall which index is which for the dtable
 
-        // Compute the nodes on the shortest path by "backtracking" using the table
+        /*create Dijkstra's table*/
+        for(int i = 0; i < graph.numNodes(); i++){
+            dTable[i][sourceVer] = -1;
+            if (i == sourceIndex) { //initializes origin to have itself as source, and it's found to be true
+                //dTable[i][sourceIndex] = graph.getId(origin);
+                dTable[i][cost] = 0;
+            }else{ //initializes all other vertices to have infinity and -1
+                dTable[i][cost] = INFINITY;
+            }
+            queue.insert(i, dTable[i][cost]);
+        }
 
-        // The result should be in an instance variable called "shortestPath" and
-        // should also be returned by the method
-        return null; // don't forget to change it
+        while (!queue.isEmpty()) {
+            int sVertex = queue.removeMin();
+            Edge adjList = graph.getAdjList(sVertex);
+            Edge current = adjList;
+            while (current != null) {
+                int destId = current.getNeighbor();
+                int total = dTable[sVertex][cost] + current.getCost();
+                if (total < dTable[destId][cost]) {
+                    dTable[destId][cost] = total;
+                    dTable[destId][sourceVer] = sVertex;
+                    queue.reduceKey(destId, total);
+                }
+                current = current.getNext();
+            }
+        }
+
+        int k = graph.getId(destination);
+        int index = 0;
+        int pathCost = 0;
+        while(k != graph.getId(origin)){
+            dTable[k][cost] += pathCost;
+            shortestPath.add(index, k);
+            k = dTable[k][sourceIndex];
+        }
+
+
+
+
+
+        return shortestPath;
     }
+
 
     /**
      * Return the shortest path as a 2D array of Points.
