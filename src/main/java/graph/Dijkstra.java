@@ -1,5 +1,6 @@
 package graph;
 
+
 /** Class Dijkstra. Implementation of Dijkstra's algorithm for finding the shortest path
  * between the source vertex and other vertices in the graph.
  *  Fill in code. You may add additional helper methods or classes.
@@ -12,7 +13,7 @@ import java.awt.Point;
 
 public class Dijkstra {
     private Graph graph; // stores the graph of CityNode-s and edges connecting them
-    private List<Integer> shortestPath = null; // nodes that are part of the shortest path
+    private List<Integer> shortestPath; // nodes that are part of the shortest path
     priorityQueue.PriorityQueue queue;
 
 
@@ -36,8 +37,7 @@ public class Dijkstra {
      * @return the ArrayList of nodeIds (of nodes on the shortest path)
      */
     public List<Integer> computeShortestPath(CityNode origin, CityNode destination) {
-        List<Integer> shortestPath = new LinkedList<Integer>();
-        // FILL IN CODE
+        shortestPath = new LinkedList<Integer>();
         queue = new PriorityQueue(graph.numNodes());
         int INFINITY = (int)Double.POSITIVE_INFINITY;
         boolean[] found = new boolean[graph.numNodes()];
@@ -77,20 +77,15 @@ public class Dijkstra {
         }
 
         int k = graph.getId(destination);
-        int index = 0;
-        int pathCost = 0;
         while(k != graph.getId(origin)){
-            dTable[k][cost] += pathCost;
-            shortestPath.add(index, k);
-            k = dTable[k][sourceIndex];
+            shortestPath.add(0, k);
+            k = dTable[k][sourceVer];
         }
-
-
-
-
-
+        shortestPath.add(0, k); //adds origin
         return shortestPath;
     }
+
+
 
 
     /**

@@ -134,11 +134,12 @@ public class PriorityQueue {
     private void bubbleUp(int nodeId){
         int position = positions[nodeId];
         int parent = parent(position);
-        int parentNodeId = -1;
         while(heap[parent] > heap[position]){
             swap(parent, position);
-            }
-            position = parent(position);
+            position = positions[nodeId];
+            parent = parent(position);
+        }
+
     }
 
     private void pushDown(int position) {
