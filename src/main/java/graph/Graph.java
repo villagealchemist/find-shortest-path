@@ -38,7 +38,6 @@ public class Graph {
                 String cityName = myLine[0];
                 Double x = Double.parseDouble(myLine[1]);
                 Double y = Double.parseDouble(myLine[2]);
-               // labelsToIndices.put(cityName, numNodes);
                 CityNode newNode = new CityNode(cityName, x, y);
                 addNode(newNode);
             }

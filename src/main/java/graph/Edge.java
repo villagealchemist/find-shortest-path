@@ -35,6 +35,5 @@ class Edge {
     public Edge getNext() {
         return next;
     }
-    // FILL IN CODE: constructor, getters, setters
 
 }
